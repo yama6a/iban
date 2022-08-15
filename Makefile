@@ -2,6 +2,7 @@ IMAGE_NAME := "pfc_demo"
 GO_VERSION := $(shell go version | cut -d' ' -f3 | sed "s/go//")
 GO_VERSION_MAJOR := $(shell echo $(GO_VERSION) | cut -d' ' -f3 | sed "s/go//" | cut -d'.' -f1)
 GO_VERSION_MINOR := $(shell echo $(GO_VERSION) | cut -d' ' -f3 | sed "s/go//" | cut -d'.' -f2,2)
+HTTP_PORT := ":18888"
 
 # Ensure that binary is compiled for linux/amd64, even when developing on ARM architecture.
 HOST_ARCH := $(shell uname -m)
@@ -15,18 +16,17 @@ image: ## Creates a service image by compiling the project inside a build-contai
 
 .PHONUY: build
 build: version_check ## Compiles the project into a binary.
-	CGO_ENABLED=0 go build -mod vendor -o go-app cmd/main.go
+	CGO_ENABLED=0 go build -mod=mod -o go-app cmd/main.go
 
 .PHONY: run
 run: image ## Creates service image and runs it.
-	docker run --rm $(IMAGE_NAME):latest
+	docker run --rm -p $(HTTP_PORT):80 -e ENVIRONMENT='dev' $(IMAGE_NAME):latest
 
-# XXX: Could run this in a separate container to avoid version check
+# XXX: Could run vendor, test and coverage in a container to avoid version check (but would be noticeably slower)
 .PHONY: vendor
 vendor: version_check ## Updates and vendors all dependencies.
 	go get -u -t ./...
 	go mod tidy
-	go mod vendor
 
 .PHONY: test
 test: version_check ## Runs tests.
