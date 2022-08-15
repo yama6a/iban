@@ -34,15 +34,16 @@
     - [ ] Exported generic validation method
         - e.g. `func (svc *Service) Parse(iban string) (IBAN, error)`
     - [ ] Unit tests
-- [ ] Dev-Environment
+- [x] Dev-Environment
     - [x] Makefile
     - [x] Compile in Build Container
     - [x] Create Runtime Image
     - [x] `make build` to compile binary
     - [x] `make image` to create runtime image
     - [x] `make run` to run/stop compiled binary on dev machine
-    - [ ] `make test` to run unit & functional tests
-    - [ ] `make mod` to update and vendor dependencies
+    - [x] `make test` to run unit & functional tests
+        - [x] `make coverage` to create and view a test-coverage report
+    - [x] `make vendor` to update and vendor dependencies
 - [ ] CI
     - [ ] `make lint` to run linters
     - [ ] Include Mock-Generation in `make generate` command
