@@ -15,6 +15,8 @@
 ## Implementation Steps
 (in no particular order)
 
+- [x] Simple Extensible WebServer
+    - [x] Unit Tests
 - [ ] HTTP API with one endpoint: `/validate/{iban}`
     - [ ] JSON response with:
         * `error:string` is the error message if the IBAN is invalid and null otherwise
