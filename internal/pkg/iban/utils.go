@@ -1,37 +1,11 @@
-package validators
+package iban
 
 import (
 	"fmt"
 	"strconv"
-	"unicode"
 )
 
 type baseValidator struct{}
-
-func (v *baseValidator) ValidateChecksum(iban string) error {
-	// Ref: https://en.wikipedia.org/wiki/International_Bank_Account_Number#Validating_the_IBAN
-	transposedIban := fmt.Sprintf("%s%s%s", iban[4:], iban[:2], iban[2:4])
-
-	str := ""
-	for _, r := range transposedIban {
-		if unicode.IsDigit(r) {
-			str += string(r)
-			continue
-		}
-
-		digits, err := convertLetterToInt(r)
-		if err != nil {
-			return fmt.Errorf("failed to convert IBAN into numeric format: %w", err)
-		}
-		str += strconv.Itoa(digits)
-	}
-
-	if mod97(str) != 1 {
-		return ErrIncorrectIBANChecksum
-	}
-
-	return nil
-}
 
 // mod97 calculates the mod97 of very large string-represented number (too large to fit into uint64)
 //
