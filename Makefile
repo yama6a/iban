@@ -39,8 +39,15 @@ coverage: version_check ## Runs tests and generates coverage report.
 
 .PHONY: version_check
 version_check: ## Checks that the go version is correct.
-	echo "$(GO_VERSION_MAJOR)  $(GO_VERSION_MINOR)"
 	@if [[ "$(GO_VERSION_MAJOR)" != 1 ]] || [[ "$(GO_VERSION_MINOR)" -lt "18" ]]; then \
-		echo "WARNING: go version >=1.18 is required to build this project. Your version is $(GO_VERSION)."; \
+		echo "WARNING: go version >=1.18 and <2.0 is required to build this project. Your version is $(GO_VERSION)."; \
 		exit 1; \
 	fi
+
+.PHONY: docs
+docs: ## Build API documentation.
+	docker run $(DOCKER_PLATFORM) --rm -v $(CURDIR):/go/src -w /go/src quay.io/goswagger/swagger:latest generate spec --scan-models --exclude-deps -o ./api/swagger.json
+
+.PHONY: serve_docs
+serve_docs: docs ## Serve API documentation locally.
+	docker run $(DOCKER_PLATFORM) --rm -it -v $(CURDIR):/go/src -w /go/src -p 44563:44563 quay.io/goswagger/swagger serve --no-open -p 44563 --flavor swagger api/swagger.json
