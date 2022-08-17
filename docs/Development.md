@@ -29,13 +29,13 @@
         - [x] Build Swagger-Docs with `make docs` command
     - [x] Unit Tests
     - [ ] Functional Tests
-- [ ] Service Layer
+- [x] Service Layer
     - [x] Investigate IBAN structure
     - [x] ~~Regex-Hashmap vs. abstraction layer~~
     - [x] Exported generic validation method
         - e.g. `func (svc *Service) Parse(iban string) (IBAN, error)`
     - [x] Implement at least 3 countries' validation methods
-    - [ ] Unit tests
+    - [x] Unit tests
 - [x] Dev-Environment
     - [x] Makefile
     - [x] Compile in Build Container
@@ -48,8 +48,8 @@
     - [x] `make vendor` to update and vendor dependencies
 - [ ] CI
     - [ ] `make lint` to run linters
-    - [ ] Include Mock-Generation in `make generate` command
-    - [ ] Verify Generated Files are up-to-date
+    - [ ] ~~Include Mock-Generation in `make generate` command~~
+    - [ ] Verify generated Swagger-docs are up-to-date
     - [ ] GitHub Actions for all of the above
 - [ ] CD
     - [ ] Push Swagger Docs to Swagger Hub (and tag new version + latest)
