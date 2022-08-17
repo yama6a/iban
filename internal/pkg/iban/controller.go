@@ -43,8 +43,6 @@ func NewController(parser Parser, logger *zap.Logger) *Controller {
 func (ctrl Controller) SetupRoutes() {
 	// handles all routes prefixed with /iban/ (needed to handle non-query route-params)
 	http.HandleFunc("/v1/iban/", func(w http.ResponseWriter, r *http.Request) {
-		ctrl.logger.Info("request received", zap.String("method", r.Method), zap.String("path", r.URL.Path))
-
 		// Add sub-routes as new "cases" here.
 		switch path := r.URL.Path; {
 		case r.Method == http.MethodGet && validateEndpointRegexp.MatchString(path): // /iban/<iban>/validate
