@@ -83,7 +83,8 @@ func (ctrl Controller) SetupRoutes() {
 // validate parses and validates the iban string.
 func (ctrl Controller) validate(w http.ResponseWriter, r *http.Request) {
 	ibanStr := validateEndpointRegexp.FindStringSubmatch(r.URL.Path)[1]
-	ibanStr = strings.Replace(ibanStr, " ", "", -1) // remove all whitespaces to allow human-friendly spacing
+	ibanStr = strings.Replace(ibanStr, " ", "", -1)
+	ibanStr = strings.ToUpper(ibanStr)
 
 	iban, err := ctrl.parser.Parse(ibanStr)
 	if err != nil {

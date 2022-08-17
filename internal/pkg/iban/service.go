@@ -3,53 +3,39 @@ package iban
 import (
 	"fmt"
 	"regexp"
-	"strconv"
-
-	"github.com/ymakhloufi/pfc/internal/pkg/iban/validators"
 )
 
 var (
 	_ Parser = &Service{}
 
-	ibanRegexp = regexp.MustCompile(`^*([A-Z]{2})(\d{2})([A-Z\d]+)$`)
+	ibanRegexp                 = regexp.MustCompile(`^([A-Z]{2})(\d{2})([A-Z\d]+)$`)
+	ErrIncorrectIbanFormat     = fmt.Errorf("provided string does not satisfy the iban format: %s", ibanRegexp.String())
+	ErrCountryCodeNotSupported = fmt.Errorf("country code is not supported")
+	ErrBBANEmpty               = fmt.Errorf("BBAN is empty")
+	ErrCountryCodeEmpty        = fmt.Errorf("country code is empty")
 )
 
-type CountryValidator interface {
-	ValidateChecksum(string) error
-	ValidateLength(string) error
-	ValidateBban(string) error
-}
-
 type Service struct {
-	validators map[string]CountryValidator
+	validators map[string]countryValidator
 }
 
 func NewService() *Service {
 	return &Service{
-		validators: map[string]CountryValidator{
-			"AT": &validators.Austria{},
-			"BR": &validators.Brazil{},
-			"GB": &validators.GB{},
-			"BA": &validators.Bosnia{},
-		},
+		validators: countryValidators,
 	}
 }
 
 func (svc *Service) Parse(ibanStr string) (IBAN, error) {
 	matches := ibanRegexp.FindStringSubmatch(ibanStr)
 	if matches == nil || len(matches) != 4 {
-		return IBAN{}, fmt.Errorf("provided string `%s` does not satisfy the iban format: %s", ibanStr, ibanRegexp.String())
+		return IBAN{}, ErrIncorrectIbanFormat
 	}
 
-	countryCode, checkDigitsStr, bban := matches[1], matches[2], matches[3]
-	checkDigits, err := strconv.ParseUint(checkDigitsStr, 10, 8)
-	if err != nil {
-		return IBAN{}, fmt.Errorf("failed to parse check-digits: %s for iban %s", ibanStr)
-	}
+	countryCode, checkDigits, bban := matches[1], matches[2], matches[3]
 
 	return IBAN{
 		CountryCode: countryCode,
-		CheckDigits: uint8(checkDigits),
+		CheckDigits: checkDigits,
 		BBAN:        bban,
 	}, nil
 }
@@ -57,30 +43,35 @@ func (svc *Service) Parse(ibanStr string) (IBAN, error) {
 // Validate validates the iban's format and checks the check-digits.
 func (svc *Service) Validate(i IBAN) error {
 	if i.CountryCode == "" {
-		return fmt.Errorf("country code is empty")
+		return ErrCountryCodeEmpty
 	}
 	if i.BBAN == "" {
-		return fmt.Errorf("bban is empty")
+		return ErrBBANEmpty
 	}
 
 	validator, ok := svc.validators[i.CountryCode]
 	if !ok {
-		return fmt.Errorf("country code %s is not supported", i.CountryCode)
+		return ErrCountryCodeNotSupported
 	}
 
-	err := validator.ValidateChecksum(i.String())
+	err := validator.ValidateIbanLength(i)
 	if err != nil {
-		return fmt.Errorf("check-digits are invalid: %s", err)
+		return fmt.Errorf("iban length validation error: %w", err)
 	}
 
-	err = validator.ValidateLength(i.String())
+	err = validator.ValidateIbanChecksum(i)
 	if err != nil {
-		return fmt.Errorf("failed to validate length: %s", err)
+		return fmt.Errorf("iban checksum validation error: %w", err)
 	}
 
-	err = validator.ValidateBban(i.BBAN)
+	err = validator.ValidateBbanFormat(i)
 	if err != nil {
-		return fmt.Errorf("failed to validate bban: %s", err)
+		return fmt.Errorf("bban format validation error: %w", err)
+	}
+
+	err = validator.ValidateBbanChecksum(i)
+	if err != nil {
+		return fmt.Errorf("bban checksum validation error: %w", err)
 	}
 
 	return nil
