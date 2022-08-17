@@ -98,7 +98,7 @@ func TestController_validate(t *testing.T) {
 		},
 		{
 			name: "validation error returns 422",
-			r:    httptest.NewRequest(http.MethodGet, "/v1/iban/NL22555566667777/validate", nil),controller
+			r:    httptest.NewRequest(http.MethodGet, "/v1/iban/NL22555566667777/validate", nil),
 			want: fmt.Sprintf(`{"error":"%s","is_valid":false,"iban":{"country_code":"NL","check_digits":"22","bban":"555566667777"}}`, "validation error"),
 			parser: &mockParser{
 				ParseFunc: func(s string) (IBAN, error) {
