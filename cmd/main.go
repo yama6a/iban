@@ -17,9 +17,9 @@ func main() {
 		log.Fatalf("failed to initialize logger: %v", err)
 	}
 
-	logger.Info(fmt.Sprintf("Starting Web Server on port %d", port))
 	httpServer := http.NewHttpServer(port, logger, nil)
 
+	logger.Info(fmt.Sprintf("Starting Web Server on port %d", port))
 	err = httpServer.Run()
 	logger.Warn("http server stopped", zap.Error(err))
 }

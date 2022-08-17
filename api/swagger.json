@@ -1,0 +1,57 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/v1/iban/{iban}/validate": {
+      "get": {
+        "summary": "# Validates a given IBAN string and returns its validity, components and a possible error message.",
+        "operationId": "validateIBAN",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "iban",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "IBAN": {
+      "type": "object",
+      "properties": {
+        "bban": {
+          "type": "string",
+          "x-go-name": "BBAN"
+        },
+        "check_digit": {
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "CheckDigits"
+        },
+        "country_code": {
+          "type": "string",
+          "x-go-name": "CountryCode"
+        }
+      },
+      "x-go-package": "github.com/ymakhloufi/pfc/internal/pkg/iban"
+    },
+    "httpResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "x-go-name": "Error"
+        },
+        "iban": {
+          "$ref": "#/definitions/IBAN"
+        },
+        "is_valid": {
+          "type": "boolean",
+          "x-go-name": "IsValid"
+        }
+      },
+      "x-go-package": "github.com/ymakhloufi/pfc/internal/pkg/iban"
+    }
+  }
+}

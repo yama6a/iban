@@ -18,17 +18,16 @@
 - [x] Simple Extensible WebServer
     - [x] Unit Tests
 - [ ] HTTP API with one endpoint: `/validate/{iban}`
-    - [ ] JSON response with:
+    - [x] JSON response with:
         * `error:string` is the error message if the IBAN is invalid and null otherwise
         * `isValid:bool` is true if the IBAN is valid and false otherwise
         * `parsedComponents:struct` contains componentized IBAN if isValid is true and null otherwise
             * `country:string` is the country code
             * `checkDigits:uint` is the check digits
-            * `bankCode:string` is the bank code (looks like this can be a string?)
-            * `accountNumber: uint` is the account number
-    - [ ] [Swagger](https://swagger.io/) specifications
-        - [ ] Include Swagger-Docs in `make generate` command
-    - [ ] Unit Tests
+            * `bban:string` is the bank code (looks like this can be a string?)
+    - [x] [Swagger](https://swagger.io/) specifications
+        - [x] Build Swagger-Docs with `make docs` command
+    - [x] Unit Tests
     - [ ] Functional Tests
 - [ ] Service Layer
     - [ ] Investigate IBAN structure
