@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strings"
 
 	server "github.com/ymakhloufi/pfc/internal/http"
 	"go.uber.org/zap"
@@ -14,7 +15,7 @@ var (
 	_ server.Controller = Controller{}
 
 	// faster to compile once, rather than each request.
-	// Downside: if it fails, it panics the whole server on startup
+	// Downside: if it fails, it panics the whole server on startup,
 	// instead of doing regexp.Compile() and handling the returned error gracefully.
 	validateEndpointRegexp = regexp.MustCompile(`^/v1/iban/([^/?]+)/validate/?$`)
 )
@@ -42,6 +43,8 @@ func NewController(parser Parser, logger *zap.Logger) *Controller {
 func (ctrl Controller) SetupRoutes() {
 	// handles all routes prefixed with /iban/ (needed to handle non-query route-params)
 	http.HandleFunc("/v1/iban/", func(w http.ResponseWriter, r *http.Request) {
+		ctrl.logger.Info("request received", zap.String("method", r.Method), zap.String("path", r.URL.Path))
+
 		// Add sub-routes as new "cases" here.
 		switch path := r.URL.Path; {
 		case r.Method == http.MethodGet && validateEndpointRegexp.MatchString(path): // /iban/<iban>/validate
@@ -80,6 +83,8 @@ func (ctrl Controller) SetupRoutes() {
 // validate parses and validates the iban string.
 func (ctrl Controller) validate(w http.ResponseWriter, r *http.Request) {
 	ibanStr := validateEndpointRegexp.FindStringSubmatch(r.URL.Path)[1]
+	ibanStr = strings.Replace(ibanStr, " ", "", -1) // remove all whitespaces to allow human-friendly spacing
+
 	iban, err := ctrl.parser.Parse(ibanStr)
 	if err != nil {
 		ctrl.logger.Error("request failed", zap.Error(err))

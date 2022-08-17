@@ -30,10 +30,11 @@
     - [x] Unit Tests
     - [ ] Functional Tests
 - [ ] Service Layer
-    - [ ] Investigate IBAN structure
-    - [ ] Regex-Hashmap vs. abstraction layer
-    - [ ] Exported generic validation method
+    - [x] Investigate IBAN structure
+    - [x] ~~Regex-Hashmap vs.~~ abstraction layer
+    - [x] Exported generic validation method
         - e.g. `func (svc *Service) Parse(iban string) (IBAN, error)`
+    - [ ] Implement at least 3 countries' validation methods
     - [ ] Unit tests
 - [x] Dev-Environment
     - [x] Makefile

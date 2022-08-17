@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/ymakhloufi/pfc/internal/http"
+	"github.com/ymakhloufi/pfc/internal/pkg/iban"
 	"go.uber.org/zap"
 )
 
@@ -17,7 +18,11 @@ func main() {
 		log.Fatalf("failed to initialize logger: %v", err)
 	}
 
-	httpServer := http.NewHttpServer(port, logger, nil)
+	ibanService := iban.NewService()
+	ibanController := iban.NewController(ibanService, logger)
+	httpServer := http.NewHttpServer(port, logger, []http.Controller{
+		ibanController,
+	})
 
 	logger.Info(fmt.Sprintf("Starting Web Server on port %d", port))
 	err = httpServer.Run()
