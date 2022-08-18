@@ -25,20 +25,20 @@ func TestController_writeResponse(t *testing.T) {
 		{
 			name: "success",
 			args: args{
-				iban:   &IBAN{CountryCode: "NL", CheckDigits: 1234, BBAN: "112233"},
+				iban:   &IBAN{CountryCode: "NL", CheckDigits: "12", BBAN: "112233"},
 				err:    nil,
 				status: http.StatusOK,
 			},
-			want: `{"error":null,"is_valid":true,"iban":{"country_code":"NL","check_digit":1234,"bban":"112233"}}`,
+			want: `{"error":null,"is_valid":true,"iban":{"country_code":"NL","check_digits":"12","bban":"112233"}}`,
 		},
 		{
 			name: "error with IBAN object",
 			args: args{
-				iban:   &IBAN{CountryCode: "NL", CheckDigits: 1234, BBAN: "112233"},
+				iban:   &IBAN{CountryCode: "NL", CheckDigits: "12", BBAN: "112233"},
 				err:    errors.New("some error"),
 				status: http.StatusTeapot,
 			},
-			want: `{"error":"some error","is_valid":false,"iban":{"country_code":"NL","check_digit":1234,"bban":"112233"}}`,
+			want: `{"error":"some error","is_valid":false,"iban":{"country_code":"NL","check_digits":"12","bban":"112233"}}`,
 		},
 		{
 			name: "error without IBAN object",
@@ -74,10 +74,10 @@ func TestController_validate(t *testing.T) {
 		{
 			name: "success",
 			r:    httptest.NewRequest(http.MethodGet, "/v1/iban/NL22555566667777/validate", nil),
-			want: `{"error":null,"is_valid":true,"iban":{"country_code":"NL","check_digit":22,"bban":"555566667777"}}`,
+			want: `{"error":null,"is_valid":true,"iban":{"country_code":"NL","check_digits":"22","bban":"555566667777"}}`,
 			parser: &mockParser{
 				ParseFunc: func(s string) (IBAN, error) {
-					return IBAN{CountryCode: "NL", CheckDigits: 22, BBAN: "555566667777"}, nil
+					return IBAN{CountryCode: "NL", CheckDigits: "22", BBAN: "555566667777"}, nil
 				},
 				ValidateFunc: func(iban IBAN) error {
 					return nil
@@ -99,10 +99,10 @@ func TestController_validate(t *testing.T) {
 		{
 			name: "validation error returns 422",
 			r:    httptest.NewRequest(http.MethodGet, "/v1/iban/NL22555566667777/validate", nil),
-			want: fmt.Sprintf(`{"error":"%s","is_valid":false,"iban":{"country_code":"NL","check_digit":22,"bban":"555566667777"}}`, "validation error"),
+			want: fmt.Sprintf(`{"error":"%s","is_valid":false,"iban":{"country_code":"NL","check_digits":"22","bban":"555566667777"}}`, "validation error"),
 			parser: &mockParser{
 				ParseFunc: func(s string) (IBAN, error) {
-					return IBAN{CountryCode: "NL", CheckDigits: 22, BBAN: "555566667777"}, nil
+					return IBAN{CountryCode: "NL", CheckDigits: "22", BBAN: "555566667777"}, nil
 				},
 				ValidateFunc: func(iban IBAN) error {
 					return errors.New("validation error")
