@@ -1,5 +1,5 @@
 # Compile runtime binary inside alpine-based builder-container
-# (avoid using local go-binary to prevent "works on my machine" problem)
+# (avoid using local go-binary to prevent "works on my machine" problems)
 FROM golang:1.18-alpine AS build
 
 WORKDIR /app
