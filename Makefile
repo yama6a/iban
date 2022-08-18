@@ -1,4 +1,4 @@
-IMAGE_NAME := "pfc_demo"
+IMAGE_NAME := "docker-pfc"
 GO_VERSION := $(shell go version | cut -d' ' -f3 | sed "s/go//")
 GO_VERSION_MAJOR := $(shell echo $(GO_VERSION) | cut -d' ' -f3 | sed "s/go//" | cut -d'.' -f1)
 GO_VERSION_MINOR := $(shell echo $(GO_VERSION) | cut -d' ' -f3 | sed "s/go//" | cut -d'.' -f2,2)

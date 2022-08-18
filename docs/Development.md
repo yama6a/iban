@@ -53,10 +53,10 @@
     - [ ] GitHub Actions for all of the above
 - [ ] CD
     - [ ] Push Swagger Docs to Swagger Hub (and tag new version + latest)
-    - [ ] K8S Manifests
-        - [ ] Namespace
-        - [ ] Deployment
-        - [ ] Service
-        - [ ] Ingress
+    - [x] K8S Manifests
+        - [x] Namespace
+        - [x] Deployment
+        - [x] Service
+        - [x] Ingress
     - [ ] GitHub Action for tagging new version by label
     - [ ] GitHub Action for applying k8s manifests to EKS cluster
