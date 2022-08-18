@@ -24,3 +24,12 @@ make vendor # Updates dependencies
 
 make serve_docs # Serves the Swagger documentation
 ```
+
+### Deployment
+(assuming you have a kubernetes cluster)
+
+Namespace must be created first, then the rest!
+
+```bash
+kubectl apply -f .k8s/namespace && kubectl apply -f .k8s/
+```
