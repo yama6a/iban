@@ -20,7 +20,7 @@ HTTP_PORT=22334 make run # Same as above, but with a different port
 make test # Runs all tests
 make coverage # Creates a test coverage report and automatically opens it in the browser
 
-make vendor # Updates and vendors dependencies
+make vendor # Updates dependencies
 
 make serve_docs # Serves the Swagger documentation
 ```

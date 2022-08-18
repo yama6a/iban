@@ -24,7 +24,7 @@ run: image ## Creates service image and runs it.
 
 # XXX: Could run vendor, test and coverage in a container to avoid version check (but would be noticeably slower)
 .PHONY: vendor
-vendor: version_check ## Updates and vendors all dependencies.
+vendor: version_check ## Updates all dependencies.
 	go get -u -t ./...
 	go mod tidy
 
