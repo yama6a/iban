@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strings"
 
 	server "github.com/ymakhloufi/pfc/internal/http"
 	"go.uber.org/zap"
@@ -14,7 +15,7 @@ var (
 	_ server.Controller = Controller{}
 
 	// faster to compile once, rather than each request.
-	// Downside: if it fails, it panics the whole server on startup
+	// Downside: if it fails, it panics the whole server on startup,
 	// instead of doing regexp.Compile() and handling the returned error gracefully.
 	validateEndpointRegexp = regexp.MustCompile(`^/v1/iban/([^/?]+)/validate/?$`)
 )
@@ -80,6 +81,9 @@ func (ctrl Controller) SetupRoutes() {
 // validate parses and validates the iban string.
 func (ctrl Controller) validate(w http.ResponseWriter, r *http.Request) {
 	ibanStr := validateEndpointRegexp.FindStringSubmatch(r.URL.Path)[1]
+	ibanStr = strings.Replace(ibanStr, " ", "", -1)
+	ibanStr = strings.ToUpper(ibanStr)
+
 	iban, err := ctrl.parser.Parse(ibanStr)
 	if err != nil {
 		ctrl.logger.Error("request failed", zap.Error(err))
