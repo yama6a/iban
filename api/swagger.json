@@ -24,9 +24,8 @@
           "type": "string",
           "x-go-name": "BBAN"
         },
-        "check_digit": {
-          "type": "integer",
-          "format": "uint64",
+        "check_digits": {
+          "type": "string",
           "x-go-name": "CheckDigits"
         },
         "country_code": {
