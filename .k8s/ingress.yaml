@@ -8,11 +8,13 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/group.name: sample-app  # use the same group-name to share the ALB (they cost money!)
-    external-dns.alpha.kubernetes.io/hostname: pfc.yamasa.link # if you have a custom domain, add it here and in the TF variable. (this supports a comma-separated list, but the TF module currently only supports one or none - ToDo: fix this)
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80,"HTTPS":443}]' # enable SSL (the ALB-Controller automatically searches for the HOST specified in the rules below and pegs a matching cert to the ALB)
+    external-dns.alpha.kubernetes.io/hostname: pfc.api.yamasa.cloud, pfc.yamasa.link # if you have a custom domain, add it here and in the TF variable. (this supports a comma-separated list)
 spec:
   ingressClassName: alb
   rules:
-    - http:
+    - host: pfc.api.yamasa.cloud
+      http: &http_rules
         paths:
           - path: /
             pathType: Prefix
@@ -21,3 +23,5 @@ spec:
                 name: service-pfc
                 port:
                   number: 80
+    - host: pfc.yamasa.link
+      http: *http_rules
