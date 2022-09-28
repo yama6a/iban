@@ -1,6 +1,6 @@
 # IBAN Demo Project
 
-## Introduction
+### Introduction
 This project implements a simple IBAN format validator.
 
 ## Development Progres Documentation
